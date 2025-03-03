@@ -109,14 +109,15 @@ router.route('/movies')
 
     // PUT Method (Requires JWT Authentication)
     .put(authJwtController.isAuthenticated, (req, res) => {
-        var response = {
-            status: 200,
-            message: "movie updated",
-            headers: req.headers,
-            query: req.query,
-            env: process.env.UNIQUE_KEY
-        };
-        res.json(response);
+        console.log(req.body);
+        res = res.status(200);
+        if (req.get('Content-Type')) {
+            res = res.type(req.get('Content-Type'));
+        }
+        var o = getJSONObjectForMovieRequirement(req);
+        o.status = 200;
+        o.message = "movie updated";
+        res.json(o);
     })
 
     // DELETE Method (Requires Basic Authentication)
