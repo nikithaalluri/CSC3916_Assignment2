@@ -3,7 +3,7 @@ CSC3916 HW2
 File: Server.js
 Description: Web API scaffolding for Movie API
  */
-
+require('dotenv').config();
 var express = require('express');
 var http = require('http');
 var bodyParser = require('body-parser');
@@ -72,6 +72,57 @@ router.post('/signin', (req, res) => {
     }
 });
 
+router.route('/movies')
+    .get((req, res) => {
+        // HTTP GET Method
+        var jsonResponse = {
+            status: 200,
+            message: 'GET movies',
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        };
+        res.json(jsonResponse);
+    })
+    .post((req, res) => {
+        // HTTP POST Method
+        var jsonResponse = {
+            status: 200,
+            message: 'movie saved',
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        };
+        res.json(jsonResponse);
+    })
+    .put(authJwtController.isAuthenticated, (req, res) => {
+        // HTTP PUT Method
+        var jsonResponse = {
+            status: 200,
+            message: 'movie updated',
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        };
+        res.json(jsonResponse);
+    })
+    .delete(authController.isAuthenticated, (req, res) => {
+        // HTTP DELETE Method
+        var jsonResponse = {
+            status: 200,
+            message: 'movie deleted',
+            headers: req.headers,
+            query: req.query,
+            env: process.env.UNIQUE_KEY
+        };
+        res.json(jsonResponse);
+    })
+    .all((req, res) => {
+        // Any other HTTP Method (e.g., PATCH)
+        res.status(405).send({ message: 'HTTP method not supported.' });
+    });
+
+
 router.route('/testcollection')
     .delete(authController.isAuthenticated, (req, res) => {
         console.log(req.body);
@@ -95,7 +146,10 @@ router.route('/testcollection')
     );
     
 app.use('/', router);
-app.listen(process.env.PORT || 8080);
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 module.exports = app; // for testing only
 
 
